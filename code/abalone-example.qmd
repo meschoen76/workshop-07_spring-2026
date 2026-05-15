@@ -1,9 +1,9 @@
 ---
 title: "Linear regression: Abalone growth and pH example"
-author: "your name here"
-date: "insert date here"
+author: "Matthew Schoen "
+date: "May 15, 2026"
 format:
-  html:
+  pdf:
     toc: true # use this to display a table of contents
 execute:
   message: false # use this to make sure messages don't show up
@@ -32,49 +32,50 @@ Data from Hamilton et al. 2022. "Integrated multi-trophic aquaculture mitigates 
 
 ## a. Questions and hypotheses
 
-Question: How does pH predict abalone growth (measured in change in shell surface area per day, mm^-2^ d^-1^)?  
+Question: How does pH predict abalone growth (measured in change in shell surface area per day, mm^-2^ d^-1^)?
 
-H~0~: **[fill in here]**  
+H~0~: **There is no effect of pH on abalone shell growth.**
 
-H~A~: **[fill in here]**
+H~A~: **There is an effect of pH on abalone shell growth.**
 
 ## b. Cleaning
 
 ```{r}
 #| label: abalone-data-cleaning
 
-# 
-abalone_clean <- abalone  
-  # 
-  clean_names()  
-  # 
-  select(mean_p_h, change_in_area_mm2_d_1_25)  
-  # 
+# Creating a new object for the cleaned data set 
+abalone_clean <- abalone |> 
+  # cleaning the column names within the dataset 
+  clean_names() |> 
+  # selecting specific columns, mean ph and change in area
+  select(mean_p_h, change_in_area_mm2_d_1_25)  |> 
+  # renaming the selected columns to be simpler
   rename(mean_ph = mean_p_h, 
          change_in_area = change_in_area_mm2_d_1_25)
 ```
 
-Don't forget to look at your data! Use `View(abalone_clean)` in the _Console_.
+Don't forget to look at your data! Use `View(abalone_clean)` in the *Console*.
 
 ## c. Exploratory data visualization
 
 ```{r}
 #| label: abalone-scatterplot
+#| message: false
 
-# 
+# Loading in ggplot as the base layer for the visualization
 ggplot(data = abalone_clean, # 
-       aes(x = mean_ph, # 
-           y = change_in_area)) 
-  # 
+       aes(x = mean_ph, # naming the axes on the visualization
+           y = change_in_area)) +
+  # Adding first layer as points to represent observations 
   geom_point(size = 4,
              stroke = 1,
              fill = "firebrick4",
              shape = 21)
 ```
 
-Where does the missing value come from?  
+Where does the missing value come from?
 
-**insert response here**  
+**The missing data point comes from row 1 where there is no data for the mean pH. A pair of tanks had a malfunctioning pH sensor**
 
 Don't forget to turn your warnings off either in the individual code chunk or in the YAML at the top of the file.
 
@@ -86,8 +87,8 @@ Don't forget to turn your warnings off either in the individual code chunk or in
 #| label: abalone-model
 
 abalone_model <- lm(
-  change_in_area ~ mean_ph, # 
-  data = abalone_clean      # 
+  change_in_area ~ mean_ph, # forumla: change in shell SA as a function of pH
+  data = abalone_clean      #  data frame: clean abalone data 
 )
 ```
 
@@ -95,8 +96,8 @@ abalone_model <- lm(
 
 ```{r abalone-model-diagnostics}
 
-par(mfrow = c(2, 2))   # 
-plot(abalone_model)    # 
+par(mfrow = c(2, 2))   # displays plots in a 2x2 grid 
+plot(abalone_model)    # display diagnostic plots 
 
 ```
 
@@ -106,17 +107,17 @@ plot(abalone_model)    #
 #| label: abalone-model-summary
 
 # more information about the model
-summary(abalone_model)
+summary(abalone_model) 
 
 ```
 
-What is the slope estimate (with standard error?)  
+What is the slope estimate (with standard error?)
 
-**insert your response here**  
+$\beta_1$ = 2.98 $\pm$ 0.76
 
-What is the intercept estimate (with standard error?)  
+What is the intercept estimate (with standard error?)
 
-**insert your response here**
+$\beta_0$ = -18.50 $\pm$ 6.16
 
 ### Generating predictions
 
@@ -133,29 +134,29 @@ abalone_preds <- ggpredict(
 abalone_preds
 ```
 
-Look at the column names using `colnames(abalone_preds)` in the Console.  
+Look at the column names using `colnames(abalone_preds)` in the Console.
 
-What are the column names?  
+What are the column names?
 
-**insert your notes here**  
+**The column names are 'x', 'predicted', 'std.error', 'conf.low', 'conf.high', 'group' (not going to worry about 'group' column for now ) **
 
-Look at the actual object (by clicking on it in Environment).  
+Look at the actual object (by clicking on it in Environment).
 
-Look at the class of the object using `class(abalone_preds)` in the Console.  
+Look at the class of the object using `class(abalone_preds)` in the Console.
 
-What is this type of object?  
+What is this type of object?
 
-**insert your notes here**  
+**This is a ggeffects object but it is also a data frame.**
 
-View `abalone_preds` like a data frame. 
+View `abalone_preds` like a data frame.
 
-### Why generate model predictions?  
+### Why generate model predictions?
 
-This dataset does not include any _actual_ observations of abalone growth at pH = 8.  
+This dataset does not include any *actual* observations of abalone growth at pH = 8.
 
-However, the model can tell us a _prediction_ for what abalone growth could be if pH = 8 based on the existing data.  
+However, the model can tell us a *prediction* for what abalone growth could be if pH = 8 based on the existing data.
 
-Figure out what abalone growth the model would _predict_ at pH = 8.
+Figure out what abalone growth the model would *predict* at pH = 8.
 
 ```{r}
 #| label: model-predictions-8
@@ -167,9 +168,9 @@ ggpredict(
 )
 ```
 
-How would you interpret this?  
+How would you interpret this?
 
-**insert your response here**
+**At pH = 8, the model predicts abalone shell growth at 5.36 [95% CI: 5.08, 5.64] mm^2 d^1**
 
 ### Visualizing model predictions and data
 
