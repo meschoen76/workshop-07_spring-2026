@@ -3,7 +3,7 @@ title: "Linear regression: Sonadora temperature and elevation example"
 author: "Matthew Schoen "
 date: "May 15, 2026"
 format:
-  html:
+  pdf:
     toc: true # use this to display a table of contents
 execute:
   message: false # use this to make sure messages don't show up
@@ -91,7 +91,7 @@ ggplot(data = sonadora_sum,
 ```{r}
 #| label: temperature-model
 
-# model
+# Running a linearized model to predict meantemp at specified elevations
 temperature_model <- lm(
   mean_temp_c ~ elevation_m, # formula: response ~ predictor
   data = sonadora_sum # data frame
